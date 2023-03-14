@@ -5,6 +5,7 @@ import requests
 
 from FortuneCookiesBot.credentials import BOT_TOKEN, URL
 from FortuneCookiesBot.webhook import set_webhook_url
+from FortuneCookiesBot.predictionmanagerfile import PredictionManagerFile
 
 TOKEN = BOT_TOKEN
 WEBHOOK_URL_EMPTY = "https://api.telegram.org/bot{token}/setWebhook?url={url_ngrok}"
@@ -15,6 +16,9 @@ status_webhook = set_webhook_url(WEBHOOK_URL)
 
 # Create Flask app
 app = Flask(__name__)
+
+#Create predictions manager
+predictionManager = PredictionManagerFile()
 
 
 def parse_message(message):
@@ -49,12 +53,12 @@ def tel_send_message(chat_id, text):
     return r
 
 
-def get_answer(text, username):
+def get_response(text, username):
     answer = None
     if text == '/start':
         answer = "Welcome, {}!".format(username)
     elif text == "/get":
-        answer = "Test fortune cookies"
+        answer = predictionManager.get_prediction()
     else:
         answer = "Don't understand now!"
     return answer
@@ -69,7 +73,7 @@ def index():
 
         chat_id, txt, username = parse_message(msg)
 
-        answer = get_answer(txt, username)
+        answer = get_response(txt, username)
 
         tel_send_message(chat_id, answer)
 
