@@ -54,14 +54,15 @@ def tel_send_message(chat_id, text):
 
 
 def get_response(text, username):
-    answer = None
+    response = None
     if text == '/start':
-        answer = "Welcome, {}!".format(username)
+        response = "Welcome, {}!".format(username)
     elif text == "/get":
-        answer = predictionManager.get_prediction()
+        response = predictionManager.get_prediction()
+        response = 'Preditction for you, {}\n\n"{}"'.format(username, response)
     else:
-        answer = "Don't understand now!"
-    return answer
+        response = "Don't understand now!"
+    return response
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -73,9 +74,9 @@ def index():
 
         chat_id, txt, username = parse_message(msg)
 
-        answer = get_response(txt, username)
+        response = get_response(txt, username)
 
-        tel_send_message(chat_id, answer)
+        tel_send_message(chat_id, response)
 
         return Response('ok', status=200)
     else:
